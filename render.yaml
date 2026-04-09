@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: appfulbo-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build && npx prisma generate --schema=./prisma/schema.prisma
+    startCommand: npx prisma db push --schema=./prisma/schema.prisma && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

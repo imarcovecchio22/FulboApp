@@ -19,7 +19,18 @@ const PORT = parseInt(process.env.PORT || '3001', 10);
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      const allowed = [
+        process.env.FRONTEND_URL,
+        'http://localhost:3000',
+      ].filter(Boolean);
+      // Allow requests with no origin (mobile, curl, etc.) or matching origins
+      if (!origin || allowed.some((o) => origin === o || origin.endsWith('.vercel.app'))) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS: origin ${origin} not allowed`));
+      }
+    },
     credentials: true,
   })
 );
