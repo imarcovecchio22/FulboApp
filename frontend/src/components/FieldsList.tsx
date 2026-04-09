@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { FieldAvailability, SlotResult, api } from '@/lib/api';
 import { TIME_SLOTS, formatDateLong } from '@/lib/dates';
 import { parseISO } from 'date-fns';
-import { MapPin, Clock, RefreshCw, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { MapPin, Clock, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
 import clsx from 'clsx';
 
 interface Props {
@@ -153,18 +153,12 @@ export function FieldsList({ initialDate, initialTime, results }: Props) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {data.venues.map((venue) => {
-                const slot = venue.availableSlots?.[0];
-                const available = slot?.available !== false;
+                const slots = venue.availableSlots?.filter((s) => s.available !== false) ?? [];
+                const minPrice = slots.find((s) => s.price)?.price;
 
                 return (
-                  <div
-                    key={venue.id}
-                    className={clsx(
-                      'card transition-all',
-                      available ? 'hover:border-pitch-700' : 'opacity-60'
-                    )}
-                  >
-                    <div className="flex items-start justify-between mb-2">
+                  <div key={venue.id} className="card hover:border-pitch-700 transition-all">
+                    <div className="flex items-start justify-between mb-1">
                       <div>
                         <h3 className="font-semibold text-white">{venue.name}</h3>
                         <div className="flex items-center gap-1 text-gray-400 text-xs mt-0.5">
@@ -172,32 +166,31 @@ export function FieldsList({ initialDate, initialTime, results }: Props) {
                           {venue.location}
                         </div>
                       </div>
-                      {available ? (
-                        <CheckCircle className="w-5 h-5 text-pitch-400 flex-shrink-0" />
-                      ) : (
-                        <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                      )}
+                      <CheckCircle className="w-5 h-5 text-pitch-400 flex-shrink-0" />
                     </div>
 
                     {venue.address && (
-                      <p className="text-xs text-gray-500 mb-2">{venue.address}</p>
+                      <p className="text-xs text-gray-500 mb-3">{venue.address}</p>
                     )}
 
-                    {slot && (
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-800">
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <Clock className="w-3 h-3" />
-                          {slot.startTime} – {slot.endTime}hs
-                        </div>
-                        {slot.price && (
-                          <span className="text-pitch-400 text-sm font-semibold">{slot.price}</span>
-                        )}
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {slots.map((slot) => (
+                        <span
+                          key={slot.startTime}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-200"
+                        >
+                          <Clock className="w-3 h-3 text-gray-500" />
+                          {slot.startTime}
+                        </span>
+                      ))}
+                    </div>
+
+                    {minPrice && (
+                      <div className="mt-3 pt-3 border-t border-gray-800 flex justify-between items-center">
+                        <span className="text-xs text-gray-500">desde</span>
+                        <span className="text-pitch-400 text-sm font-semibold">{minPrice}</span>
                       </div>
                     )}
-
-                    <div className={clsx('mt-2 text-xs font-medium', available ? 'text-pitch-400' : 'text-red-400')}>
-                      {available ? '✓ Disponible' : '✗ No disponible'}
-                    </div>
                   </div>
                 );
               })}

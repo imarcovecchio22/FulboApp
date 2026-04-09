@@ -53,6 +53,7 @@ const CABA_FUTBOL_VENUES = [
   { id: '110',  name: 'La Terraza',               address: 'Av. Cabildo 3432',         neighborhood: 'Belgrano' },
   { id: '183',  name: 'El Poli de Cramer',        address: 'Av. Crámer 3249',          neighborhood: 'Belgrano' },
   { id: '94',   name: 'Distrito Fútbol',          address: 'Jose Hernandez 1310',      neighborhood: 'Belgrano' },
+  { id: '121',  name: 'Ciudad (Ex-Muni)',           address: 'Miguel B. Sanchez 1045',   neighborhood: 'Núñez' },
   { id: '2218', name: 'La Terraza Fútbol 5',      address: 'Blanco Encalada 1422',     neighborhood: 'Coghlan' },
   { id: '89',   name: 'Grün FC',                  address: 'Padre Canavery 1351',      neighborhood: 'Saavedra' },
   { id: '46',   name: 'Las Palmeras',             address: 'E. Holmberg 3430',         neighborhood: 'Saavedra' },
@@ -61,6 +62,8 @@ const CABA_FUTBOL_VENUES = [
   { id: '2054', name: 'Estación Futbol',          address: 'Rosetti 6240',             neighborhood: 'Villa Urquiza' },
   { id: '1686', name: 'Sucre Fútbol',             address: 'Sucre 300',                neighborhood: 'Núñez' },
   { id: '91',   name: 'Banco Fútbol',             address: 'Zufriategui 1251',         neighborhood: 'Vicente López' },
+  { id: '1530', name: 'Santo Tomé Fútbol Club',    address: 'Santo Tomé 3165',          neighborhood: 'Villa Urquiza' },
+  { id: '1834', name: 'Garden Club',              address: 'Pedro Morán 2379',         neighborhood: 'Villa del Parque' },
   // Zona centro/sur (venues originales)
   { id: '103',  name: 'El Anden',                 address: 'Yerbal 1201',              neighborhood: 'Caballito' },
   { id: '732',  name: 'Distrito Fútbol - Constitución', address: 'Salta 1727',         neighborhood: 'Constitución' },
