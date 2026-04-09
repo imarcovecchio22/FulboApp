@@ -81,6 +81,7 @@ export interface Venue {
   location: string;
   address?: string;
   imageUrl?: string;
+  permalink?: string;
   availableSlots?: TimeSlot[];
 }
 

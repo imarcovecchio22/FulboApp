@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shuffle, Pencil, Check, X, ShieldHalf } from 'lucide-react';
+import { Shuffle, Pencil, Check, X, ShieldHalf, Share2 } from 'lucide-react';
 
 interface Player {
   id: string;
@@ -106,6 +106,23 @@ export function TeamBuilder({ eventId, players }: Props) {
   const light = players.filter((p) => state.assignments[p.id] === 'light');
   const unassigned = players.filter((p) => state.assignments[p.id] === 'unassigned');
 
+  function shareWhatsApp() {
+    const lines = [
+      '⚽ *Equipos del partido*',
+      '',
+      `🔵 *${state.darkName}*`,
+      ...dark.map((p, i) => `  ${i + 1}. ${p.name}`),
+      '',
+      `🟡 *${state.lightName}*`,
+      ...light.map((p, i) => `  ${i + 1}. ${p.name}`),
+    ];
+    if (unassigned.length) {
+      lines.push('', `⚪ Sin asignar: ${unassigned.map((p) => p.name).join(', ')}`);
+    }
+    const text = encodeURIComponent(lines.join('\n'));
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  }
+
   return (
     <div className="space-y-4">
       {/* Actions */}
@@ -124,6 +141,15 @@ export function TeamBuilder({ eventId, players }: Props) {
           <X className="w-4 h-4" />
           Resetear
         </button>
+        {(dark.length > 0 || light.length > 0) && (
+          <button
+            onClick={shareWhatsApp}
+            className="flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
+          >
+            <Share2 className="w-4 h-4" />
+            Compartir por WhatsApp
+          </button>
+        )}
       </div>
 
       {/* Unassigned */}

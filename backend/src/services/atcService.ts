@@ -27,6 +27,7 @@ export interface Venue {
   location: string;
   address?: string;
   imageUrl?: string;
+  permalink?: string;
   availableSlots?: TimeSlot[];
 }
 
@@ -172,6 +173,7 @@ async function fetchVenueAvailability(
       location: venue.neighborhood,
       address: apiAddress || venue.address,
       imageUrl: data.logo_url || undefined,
+      permalink: data.permalink || undefined,
       availableSlots: matchingSlots,
     };
   } catch (err) {
@@ -227,6 +229,7 @@ interface VenueAvailabilityDTO {
   id?: string;
   name?: string;
   logo_url?: string;
+  permalink?: string;
   location?: { name?: string; lat?: number; lng?: number };
   available_courts?: CourtDTO[];
 }

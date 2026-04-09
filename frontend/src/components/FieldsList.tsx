@@ -155,12 +155,26 @@ export function FieldsList({ initialDate, initialTime, results }: Props) {
               {data.venues.map((venue) => {
                 const slots = venue.availableSlots?.filter((s) => s.available !== false) ?? [];
                 const minPrice = slots.find((s) => s.price)?.price;
+                const venueUrl = venue.permalink
+                  ? `https://atcsports.io/venues/${venue.permalink}`
+                  : undefined;
 
                 return (
                   <div key={venue.id} className="card hover:border-pitch-700 transition-all">
                     <div className="flex items-start justify-between mb-1">
                       <div>
-                        <h3 className="font-semibold text-white">{venue.name}</h3>
+                        {venueUrl ? (
+                          <a
+                            href={venueUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-white hover:text-pitch-400 transition-colors"
+                          >
+                            {venue.name} ↗
+                          </a>
+                        ) : (
+                          <h3 className="font-semibold text-white">{venue.name}</h3>
+                        )}
                         <div className="flex items-center gap-1 text-gray-400 text-xs mt-0.5">
                           <MapPin className="w-3 h-3" />
                           {venue.location}
@@ -174,15 +188,24 @@ export function FieldsList({ initialDate, initialTime, results }: Props) {
                     )}
 
                     <div className="flex flex-wrap gap-1.5 mt-2">
-                      {slots.map((slot) => (
-                        <span
-                          key={slot.startTime}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-200"
-                        >
-                          <Clock className="w-3 h-3 text-gray-500" />
-                          {slot.startTime}
-                        </span>
-                      ))}
+                      {slots.map((slot) => {
+                        const bookingUrl = venue.permalink
+                          ? `https://atcsports.io/venues/${venue.permalink}?date=${slot.date}&time=${slot.startTime}`
+                          : undefined;
+                        const slotEl = (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-200 hover:bg-pitch-800 hover:border-pitch-600 transition-colors">
+                            <Clock className="w-3 h-3 text-gray-500" />
+                            {slot.startTime}
+                          </span>
+                        );
+                        return bookingUrl ? (
+                          <a key={slot.startTime} href={bookingUrl} target="_blank" rel="noopener noreferrer">
+                            {slotEl}
+                          </a>
+                        ) : (
+                          <span key={slot.startTime}>{slotEl}</span>
+                        );
+                      })}
                     </div>
 
                     {minPrice && (
