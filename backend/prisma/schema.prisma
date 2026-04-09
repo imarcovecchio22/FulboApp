@@ -1,0 +1,62 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id             String         @id @default(uuid())
+  name           String
+  startDate      DateTime
+  endDate        DateTime
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  participants   Participant[]
+  availabilities Availability[]
+
+  @@map("events")
+}
+
+model Participant {
+  id             String         @id @default(uuid())
+  name           String
+  eventId        String
+  event          Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  availabilities Availability[]
+  createdAt      DateTime       @default(now())
+
+  @@unique([name, eventId])
+  @@map("participants")
+}
+
+model Availability {
+  id            String      @id @default(uuid())
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  eventId       String
+  event         Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  date          DateTime    @db.Date
+  timeSlot      String
+  createdAt     DateTime    @default(now())
+
+  @@unique([participantId, eventId, date, timeSlot])
+  @@map("availabilities")
+}
+
+model VenueCache {
+  id         String   @id @default(uuid())
+  externalId String?  @unique
+  name       String
+  location   String?
+  address    String?
+  imageUrl   String?
+  rawData    Json?
+  cachedAt   DateTime @default(now())
+
+  @@map("venue_cache")
+}
