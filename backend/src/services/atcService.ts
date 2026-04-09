@@ -129,16 +129,19 @@ async function fetchVenueAvailability(
       return null;
     }
 
-    // Extract all available slots between 18:00 and 24:00
+    // Extract all available slots from 18:00 onwards.
+    // IMPORTANT: parse hour directly from the ISO string to avoid UTC conversion.
+    // slot.start format: "2026-04-12T22:00-03:00" → hour = "22"
     const matchingSlots: TimeSlot[] = [];
 
     for (const court of futbol5Courts) {
       for (const slot of court.available_slots ?? []) {
-        const slotDate = new Date(slot.start);
-        const slotHour = slotDate.getHours();
+        // Extract HH:MM directly from the ISO string (index 11-15), ignoring timezone
+        const timePart = slot.start.substring(11, 16); // e.g. "22:00"
+        const slotHour = parseInt(timePart.substring(0, 2), 10);
         if (slotHour < 18) continue;
 
-        const startTime = `${String(slotDate.getHours()).padStart(2, '0')}:${String(slotDate.getMinutes()).padStart(2, '0')}`;
+        const startTime = timePart;
         const endTime = addMinutes(startTime, slot.duration ?? 60);
         const price = slot.price?.cents ? formatPrice(slot.price.cents) : undefined;
 
@@ -150,9 +153,14 @@ async function fetchVenueAvailability(
       }
     }
 
+    // If no evening slots available, don't show this venue
+    if (!matchingSlots.length) {
+      logger.debug(`ATC: venue ${venue.name} has no evening slots on ${date}`);
+      return null;
+    }
+
     matchingSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-    // Use venue address from API response if available
     const apiAddress = data.location?.name;
 
     return {
@@ -161,9 +169,7 @@ async function fetchVenueAvailability(
       location: venue.neighborhood,
       address: apiAddress || venue.address,
       imageUrl: data.logo_url || undefined,
-      availableSlots: matchingSlots.length > 0
-        ? matchingSlots
-        : [{ date, startTime: time, endTime: addHour(time), available: false }],
+      availableSlots: matchingSlots,
     };
   } catch (err) {
     if (axios.isAxiosError(err)) {
