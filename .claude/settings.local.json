@@ -38,7 +38,12 @@
       "Bash(curl -s 'https://alquilatucancha.com/api/v3/availability/sportclubs?geohash_9=69y7mv8n1&sport_id=2&date=2026-04-11' -H 'Authorization: Bearer __TRACKED_VAR__' -H 'User-Agent: Mozilla/5.0' -H 'Accept: application/json' -H 'Origin: https://atcsports.io')",
       "Bash(curl -s 'https://alquilatucancha.com/api/v3/availability/sportclubs/__TRACKED_VAR__?date=2026-04-11' -H 'Authorization: Bearer __TRACKED_VAR__' -H 'User-Agent: Mozilla/5.0' -H 'Origin: https://atcsports.io')",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_emCnq9G3OWvs@ep-cool-brook-amlsm2zy-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" npx prisma db push --schema=./prisma/schema.prisma)"
     ]
   }
 }
