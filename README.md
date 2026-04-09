@@ -283,3 +283,4 @@ npx prisma migrate reset --schema=./prisma/schema.prisma
 # Build producción backend
 npm run build && npm start
 ```
+# FulboApp
