@@ -43,7 +43,14 @@
       "Bash(git commit:*)",
       "Bash(git remote:*)",
       "Bash(git push:*)",
-      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_emCnq9G3OWvs@ep-cool-brook-amlsm2zy-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" npx prisma db push --schema=./prisma/schema.prisma)"
+      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_emCnq9G3OWvs@ep-cool-brook-amlsm2zy-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" npx prisma db push --schema=./prisma/schema.prisma)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(kill 74902 108791)",
+      "Bash(npm run:*)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP: %{http_code}\" http://localhost:3000)",
+      "Bash(git diff:*)"
     ]
   }
 }

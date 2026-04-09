@@ -2,8 +2,13 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AppFulbo — Coordiná el partido',
+  title: 'FULBO',
   description: 'Coordiná el día y la cancha del partido con tus amigos',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -14,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <span className="text-2xl">⚽</span>
             <a href="/" className="font-bold text-white text-lg tracking-tight hover:text-pitch-400 transition-colors">
-              AppFulbo
+              FULBO
             </a>
           </div>
         </nav>
