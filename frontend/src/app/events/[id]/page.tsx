@@ -10,9 +10,12 @@ import { ParticipantSelector } from '@/components/ParticipantSelector';
 import { ShareButton } from '@/components/ShareButton';
 import { formatDateLong } from '@/lib/dates';
 import { parseISO } from 'date-fns';
-import { Users, BarChart2, MapPin } from 'lucide-react';
+import { Users, BarChart2, MapPin, ShieldHalf } from 'lucide-react';
+import { TeamBuilder } from '@/components/TeamBuilder';
 
-type Tab = 'vote' | 'results' | 'fields';
+const MIN_PLAYERS_FOR_TEAMS = 10;
+
+type Tab = 'vote' | 'results' | 'fields' | 'teams';
 
 export default function EventPage() {
   const { id } = useParams<{ id: string }>();
@@ -145,6 +148,9 @@ export default function EventPage() {
             { key: 'vote', label: 'Disponibilidad', icon: <Users className="w-4 h-4" /> },
             { key: 'results', label: 'Resultados', icon: <BarChart2 className="w-4 h-4" /> },
             { key: 'fields', label: 'Canchas', icon: <MapPin className="w-4 h-4" /> },
+            ...(event.participants.length >= MIN_PLAYERS_FOR_TEAMS
+              ? [{ key: 'teams' as Tab, label: 'Equipos', icon: <ShieldHalf className="w-4 h-4" /> }]
+              : []),
           ] as { key: Tab; label: string; icon: React.ReactNode }[]
         ).map(({ key, label, icon }) => (
           <button
@@ -207,6 +213,13 @@ export default function EventPage() {
           initialTime={selectedSlot?.time ?? bestSlot?.timeSlot}
           results={results}
           onSelectSlot={(date, time) => setSelectedSlot({ date, time })}
+        />
+      )}
+
+      {tab === 'teams' && (
+        <TeamBuilder
+          eventId={id}
+          players={event.participants}
         />
       )}
     </div>
