@@ -17,6 +17,7 @@ async function request<T>(
     throw new Error(error.error || `HTTP ${res.status}`);
   }
 
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
@@ -100,6 +101,9 @@ export const api = {
     request<Event>('/events', { method: 'POST', body: JSON.stringify(data) }),
 
   getEvent: (id: string) => request<Event>(`/events/${id}`),
+
+  deleteEvent: (id: string) =>
+    request<void>(`/events/${id}`, { method: 'DELETE' }),
 
   joinEvent: (eventId: string, name: string) =>
     request<Participant>(`/events/${eventId}/join`, {

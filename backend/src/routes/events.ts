@@ -3,6 +3,7 @@ import {
   listEvents,
   createEvent,
   getEventById,
+  deleteEvent,
   joinEvent,
   getEventResults,
 } from '../services/eventService';
@@ -34,6 +35,18 @@ router.post(
     }
   }
 );
+
+// DELETE /events/:id
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const event = await getEventById(req.params.id);
+    if (!event) throw new AppError(404, 'Event not found');
+    await deleteEvent(req.params.id);
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // GET /events/:id
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {

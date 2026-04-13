@@ -53,7 +53,10 @@
       "Bash(git diff:*)",
       "Bash(python3 -c \"import json; print\\(json.load\\(open\\('/home/ignacio/Documents/AppFulbo/backend/.atc-session.json'\\)\\)['v2Token']\\)\")",
       "Bash(curl -s 'https://alquilatucancha.com/api/v3/availability/sportclubs/103?date=2026-04-10' -H 'Authorization: Bearer __TRACKED_VAR__' -H 'User-Agent: Mozilla/5.0' -H 'Origin: https://atcsports.io')",
-      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\({k:v for k,v in d.items\\(\\) if k not in ['available_courts']}\\)\")"
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\({k:v for k,v in d.items\\(\\) if k not in ['available_courts']}\\)\")",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(echo \"Frontend PID: $!\")",
+      "Read(//tmp/**)"
     ]
   }
 }

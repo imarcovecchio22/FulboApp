@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { api, EventSummary } from '@/lib/api';
 import { formatDate } from '@/lib/dates';
 import { parseISO } from 'date-fns';
-import { Calendar, Users, MapPin, ArrowRight, ChevronRight, Plus } from 'lucide-react';
+import { Calendar, Users, MapPin, ArrowRight, ChevronRight, Plus, Trash2 } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function HomePage() {
   // Events list
   const [events, setEvents] = useState<EventSummary[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     api.listEvents()
@@ -38,6 +39,20 @@ export default function HomePage() {
       setError(err instanceof Error ? err.message : 'Error al crear el evento');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDelete(e: React.MouseEvent, id: string) {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar este evento?')) return;
+    setDeletingId(id);
+    try {
+      await api.deleteEvent(id);
+      setEvents((prev) => prev.filter((ev) => ev.id !== id));
+    } catch {
+      alert('No se pudo eliminar el evento');
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -196,7 +211,17 @@ export default function HomePage() {
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-600 flex-shrink-0" />
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={(e) => handleDelete(e, ev.id)}
+                      disabled={deletingId === ev.id}
+                      className="p-1.5 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                      title="Eliminar evento"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                  </div>
                 </button>
               );
             })}

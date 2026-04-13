@@ -53,6 +53,10 @@ export async function createEvent(dto: CreateEventDto) {
   return event;
 }
 
+export async function deleteEvent(id: string) {
+  await prisma.event.delete({ where: { id } });
+}
+
 export async function getEventById(id: string) {
   const event = await prisma.event.findUnique({
     where: { id },
