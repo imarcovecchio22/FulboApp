@@ -96,8 +96,9 @@ export function ResultsPanel({
       )}
 
       {results.map((slot, idx) => {
-        const isBest = idx === 0;
         const isConfirmed = booking?.date === slot.date && booking?.timeSlot === slot.timeSlot;
+        // Si hay reserva confirmada, solo resaltar ese slot; si no, resaltar el más votado
+        const isBest = !booking && idx === 0;
         const isConfirming = confirmingSlot?.date === slot.date && confirmingSlot?.timeSlot === slot.timeSlot;
         const pct = totalParticipants > 0 ? (slot.count / totalParticipants) * 100 : 0;
         const barPct = (slot.count / maxVotes) * 100;
