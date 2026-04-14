@@ -92,6 +92,17 @@ export interface FieldAvailability {
   source: 'api' | 'scraper' | 'mock';
 }
 
+export interface BookingConfirmation {
+  id: string;
+  eventId: string;
+  venueName: string;
+  date: string;       // YYYY-MM-DD
+  timeSlot: string;   // HH:mm
+  price?: string | null;
+  confirmedBy: string;
+  confirmedAt: string;
+}
+
 // ─── Event endpoints ──────────────────────────────────────────────────────────
 
 export const api = {
@@ -126,4 +137,19 @@ export const api = {
 
   getFields: (date: string, time: string) =>
     request<FieldAvailability>(`/fields?date=${date}&time=${time}`),
+
+  getBooking: (eventId: string) =>
+    request<BookingConfirmation | null>(`/events/${eventId}/booking`),
+
+  setBooking: (eventId: string, data: {
+    venueName: string;
+    date: string;
+    timeSlot: string;
+    price?: string;
+    confirmedBy: string;
+  }) =>
+    request<BookingConfirmation>(`/events/${eventId}/booking`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 };

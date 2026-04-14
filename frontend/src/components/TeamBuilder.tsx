@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shuffle, Pencil, Check, X, ShieldHalf, Share2 } from 'lucide-react';
+import { Shuffle, Pencil, Check, X, ShieldHalf, Share2, CheckCircle2 } from 'lucide-react';
+import { formatDateLong } from '@/lib/dates';
+import { parseISO } from 'date-fns';
 
 interface Player {
   id: string;
@@ -19,6 +21,7 @@ interface TeamState {
 interface Props {
   eventId: string;
   players: Player[];
+  confirmedSlot?: { date: string; timeSlot: string; venueName: string } | null;
 }
 
 const STORAGE_KEY = (eventId: string) => `fulbo:teams:${eventId}`;
@@ -39,7 +42,7 @@ function saveState(eventId: string, state: TeamState) {
   localStorage.setItem(STORAGE_KEY(eventId), JSON.stringify(state));
 }
 
-export function TeamBuilder({ eventId, players }: Props) {
+export function TeamBuilder({ eventId, players, confirmedSlot }: Props) {
   const [state, setState] = useState<TeamState>(() => loadState(eventId, players));
   const [editingTeam, setEditingTeam] = useState<'dark' | 'light' | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -125,6 +128,23 @@ export function TeamBuilder({ eventId, players }: Props) {
 
   return (
     <div className="space-y-4">
+      {/* Confirmed slot context */}
+      {confirmedSlot && (
+        <div className="flex items-start gap-2 px-4 py-3 rounded-xl border border-green-600/40 bg-green-950/20 text-sm">
+          <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+          <div>
+            <span className="text-green-400 font-semibold">{confirmedSlot.venueName}</span>
+            <span className="text-gray-400"> · </span>
+            <span className="text-gray-300 capitalize">
+              {formatDateLong(parseISO(confirmedSlot.date))} {confirmedSlot.timeSlot}hs
+            </span>
+            <p className="text-gray-500 text-xs mt-0.5">
+              Solo se muestran los {players.length} jugador{players.length !== 1 ? 'es' : ''} disponibles en ese horario
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-2 flex-wrap">
         <button

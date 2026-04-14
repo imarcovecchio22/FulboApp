@@ -56,7 +56,11 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\({k:v for k,v in d.items\\(\\) if k not in ['available_courts']}\\)\")",
       "Bash(echo \"Backend PID: $!\")",
       "Bash(echo \"Frontend PID: $!\")",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(docker compose:*)",
+      "Bash(curl -s http://localhost:3001/health)",
+      "Bash(curl -s http://localhost:3000 -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s http://localhost:3000 -o /dev/null -w \"Frontend HTTP: %{http_code}\")"
     ]
   }
 }

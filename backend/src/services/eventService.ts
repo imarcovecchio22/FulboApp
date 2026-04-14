@@ -124,6 +124,28 @@ export async function saveAvailability(dto: AvailabilityDto) {
   return created;
 }
 
+// ─── Booking Confirmation ─────────────────────────────────────────────────────
+
+export interface SetBookingDto {
+  venueName: string;
+  date: string;       // YYYY-MM-DD
+  timeSlot: string;   // HH:mm
+  price?: string;
+  confirmedBy: string;
+}
+
+export async function getBookingConfirmation(eventId: string) {
+  return prisma.bookingConfirmation.findUnique({ where: { eventId } });
+}
+
+export async function setBookingConfirmation(eventId: string, dto: SetBookingDto) {
+  return prisma.bookingConfirmation.upsert({
+    where: { eventId },
+    update: { ...dto, confirmedAt: new Date() },
+    create: { id: uuidv4(), eventId, ...dto },
+  });
+}
+
 // ─── Results ──────────────────────────────────────────────────────────────────
 
 export async function getEventResults(eventId: string): Promise<SlotResult[]> {

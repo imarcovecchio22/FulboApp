@@ -10,16 +10,31 @@ datasource db {
 }
 
 model Event {
-  id             String         @id @default(uuid())
+  id             String                @id @default(uuid())
   name           String
   startDate      DateTime
   endDate        DateTime
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
   participants   Participant[]
   availabilities Availability[]
+  booking        BookingConfirmation?
 
   @@map("events")
+}
+
+model BookingConfirmation {
+  id          String   @id @default(uuid())
+  eventId     String   @unique
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  venueName   String
+  date        String
+  timeSlot    String
+  price       String?
+  confirmedBy String
+  confirmedAt DateTime @default(now())
+
+  @@map("booking_confirmations")
 }
 
 model Participant {

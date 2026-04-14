@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { api, Event, SlotResult } from '@/lib/api';
+import { api, Event, SlotResult, BookingConfirmation } from '@/lib/api';
 import { AvailabilityGrid } from '@/components/AvailabilityGrid';
 import { ResultsPanel } from '@/components/ResultsPanel';
 import { FieldsList } from '@/components/FieldsList';
@@ -31,6 +31,7 @@ export default function EventPage() {
   const [tab, setTab] = useState<Tab>('vote');
   const [results, setResults] = useState<SlotResult[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string } | null>(null);
+  const [booking, setBooking] = useState<BookingConfirmation | null>(null);
 
   const loadEvent = useCallback(async () => {
     try {
@@ -52,9 +53,19 @@ export default function EventPage() {
     }
   }, [id]);
 
+  const loadBooking = useCallback(async () => {
+    try {
+      const b = await api.getBooking(id);
+      setBooking(b);
+    } catch {
+      // non-critical
+    }
+  }, [id]);
+
   useEffect(() => {
     loadEvent();
     loadResults();
+    loadBooking();
 
     // Restaurar último participante usado para este evento
     const storedId = localStorage.getItem(`fulbo:participant:${id}`);
@@ -63,7 +74,7 @@ export default function EventPage() {
       setParticipantId(storedId);
       setParticipantName(storedName);
     }
-  }, [id, loadEvent, loadResults]);
+  }, [id, loadEvent, loadResults, loadBooking]);
 
   // Poll resultados cada 30s
   useEffect(() => {
@@ -85,6 +96,17 @@ export default function EventPage() {
     loadResults();
   }
 
+  async function handleBookingConfirmed(data: {
+    venueName: string;
+    date: string;
+    timeSlot: string;
+    price?: string;
+    confirmedBy: string;
+  }) {
+    const b = await api.setBooking(id, data);
+    setBooking(b);
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
@@ -104,6 +126,18 @@ export default function EventPage() {
   }
 
   const bestSlot = results[0] ?? null;
+
+  // Jugadores disponibles en el slot confirmado (para armado de equipos)
+  const teamPlayers = booking
+    ? event.participants.filter((p) =>
+        event.availabilities.some(
+          (a) =>
+            a.participantId === p.id &&
+            a.date.substring(0, 10) === booking.date &&
+            a.timeSlot === booking.timeSlot
+        )
+      )
+    : event.participants;
 
   return (
     <div className="space-y-6">
@@ -204,6 +238,9 @@ export default function EventPage() {
             setSelectedSlot({ date, time });
             setTab('fields');
           }}
+          booking={booking}
+          participantName={participantName}
+          onBookingConfirmed={handleBookingConfirmed}
         />
       )}
 
@@ -219,7 +256,8 @@ export default function EventPage() {
       {tab === 'teams' && (
         <TeamBuilder
           eventId={id}
-          players={event.participants}
+          players={teamPlayers}
+          confirmedSlot={booking ? { date: booking.date, timeSlot: booking.timeSlot, venueName: booking.venueName } : null}
         />
       )}
     </div>

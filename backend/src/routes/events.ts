@@ -6,6 +6,8 @@ import {
   deleteEvent,
   joinEvent,
   getEventResults,
+  getBookingConfirmation,
+  setBookingConfirmation,
 } from '../services/eventService';
 import { validate, required, isISODate } from '../middleware/validate';
 import { AppError } from '../middleware/errorHandler';
@@ -88,5 +90,31 @@ router.get('/:id/results', async (req: Request, res: Response, next: NextFunctio
     next(err);
   }
 });
+
+// GET /events/:id/booking
+router.get('/:id/booking', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const booking = await getBookingConfirmation(req.params.id);
+    res.json(booking ?? null);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /events/:id/booking
+router.post(
+  '/:id/booking',
+  validate([required('venueName', 'date', 'timeSlot', 'confirmedBy')]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const event = await getEventById(req.params.id);
+      if (!event) throw new AppError(404, 'Event not found');
+      const booking = await setBookingConfirmation(req.params.id, req.body);
+      res.json(booking);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export default router;
