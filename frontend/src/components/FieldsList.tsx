@@ -160,41 +160,41 @@ export function FieldsList({ initialDate, initialTime, results }: Props) {
                   : undefined;
 
                 return (
-                  <div key={venue.id} className="card hover:border-pitch-700 transition-all">
-                    <div className="flex items-start justify-between mb-1">
-                      <div>
+                  <div key={venue.id} className="card hover:border-pitch-600/50 hover:shadow-lg hover:shadow-pitch-500/8 transition-all group">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
                         {venueUrl ? (
                           <a
                             href={venueUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-semibold text-white hover:text-pitch-400 transition-colors"
+                            className="font-bold text-white hover:text-pitch-300 transition-colors text-base"
                           >
-                            {venue.name} ↗
+                            {venue.name}
+                            <span className="ml-1 text-gray-500 text-xs font-normal group-hover:text-pitch-400 transition-colors">↗</span>
                           </a>
                         ) : (
-                          <h3 className="font-semibold text-white">{venue.name}</h3>
+                          <h3 className="font-bold text-white text-base">{venue.name}</h3>
                         )}
-                        <div className="flex items-center gap-1 text-gray-400 text-xs mt-0.5">
+                        <div className="flex items-center gap-1 text-gray-500 text-xs mt-0.5">
                           <MapPin className="w-3 h-3" />
                           {venue.location}
+                          {venue.address && <span className="text-gray-600">· {venue.address}</span>}
                         </div>
                       </div>
-                      <CheckCircle className="w-5 h-5 text-pitch-400 flex-shrink-0" />
+                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-pitch-500/15 border border-pitch-500/30 flex items-center justify-center ml-2">
+                        <CheckCircle className="w-4 h-4 text-pitch-400" />
+                      </div>
                     </div>
 
-                    {venue.address && (
-                      <p className="text-xs text-gray-500 mb-3">{venue.address}</p>
-                    )}
-
-                    <div className="flex flex-wrap gap-1.5 mt-2">
+                    <div className="flex flex-wrap gap-1.5 mt-3">
                       {slots.map((slot) => {
                         const bookingUrl = venue.permalink
                           ? `https://atcsports.io/venues/${venue.permalink}?date=${slot.date}&time=${slot.startTime}`
                           : undefined;
                         const slotEl = (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-200 hover:bg-pitch-800 hover:border-pitch-600 transition-colors">
-                            <Clock className="w-3 h-3 text-gray-500" />
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-pitch-900/50 border border-pitch-800/60 text-xs text-pitch-300 hover:bg-pitch-700/50 hover:border-pitch-600/60 hover:text-pitch-200 transition-all font-medium">
+                            <Clock className="w-3 h-3" />
                             {slot.startTime}
                           </span>
                         );
@@ -209,9 +209,9 @@ export function FieldsList({ initialDate, initialTime, results }: Props) {
                     </div>
 
                     {minPrice && (
-                      <div className="mt-3 pt-3 border-t border-gray-800 flex justify-between items-center">
-                        <span className="text-xs text-gray-500">desde</span>
-                        <span className="text-pitch-400 text-sm font-semibold">{minPrice}</span>
+                      <div className="mt-3 pt-3 border-t border-white/[0.05] flex justify-between items-center">
+                        <span className="text-xs text-gray-600">desde</span>
+                        <span className="text-pitch-300 text-base font-bold tracking-tight">{minPrice}</span>
                       </div>
                     )}
                   </div>

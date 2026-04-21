@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Shuffle, Pencil, Check, X, ShieldHalf, Share2, CheckCircle2 } from 'lucide-react';
+import { getPlayerColor, getInitials } from '@/lib/playerColors';
 import { formatDateLong } from '@/lib/dates';
 import { parseISO } from 'date-fns';
 
@@ -147,24 +148,18 @@ export function TeamBuilder({ eventId, players, confirmedSlot }: Props) {
 
       {/* Actions */}
       <div className="flex gap-2 flex-wrap">
-        <button
-          onClick={shuffle}
-          className="flex items-center gap-2 px-4 py-2 bg-pitch-600 hover:bg-pitch-500 text-white rounded-lg text-sm font-medium transition-colors"
-        >
+        <button onClick={shuffle} className="btn-primary">
           <Shuffle className="w-4 h-4" />
           Mezclar aleatoriamente
         </button>
-        <button
-          onClick={reset}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-sm font-medium transition-colors"
-        >
+        <button onClick={reset} className="btn-secondary">
           <X className="w-4 h-4" />
           Resetear
         </button>
         {(dark.length > 0 || light.length > 0) && (
           <button
             onClick={shareWhatsApp}
-            className="flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#25D366] transition-all"
           >
             <Share2 className="w-4 h-4" />
             Compartir por WhatsApp
@@ -207,8 +202,8 @@ export function TeamBuilder({ eventId, players, confirmedSlot }: Props) {
           onConfirmEdit={confirmEdit}
           onCancelEdit={() => setEditingTeam(null)}
           onMove={movePlayer}
-          colorClass="border-gray-600 bg-gray-900"
-          badgeClass="bg-gray-700 text-gray-200"
+          colorClass="border-gray-500/20 bg-gray-800/30"
+          badgeClass="bg-gray-700/80 text-gray-200 border border-gray-600/40"
           headerClass="text-gray-200"
         />
         <TeamColumn
@@ -223,9 +218,9 @@ export function TeamBuilder({ eventId, players, confirmedSlot }: Props) {
           onConfirmEdit={confirmEdit}
           onCancelEdit={() => setEditingTeam(null)}
           onMove={movePlayer}
-          colorClass="border-yellow-700/40 bg-yellow-950/30"
-          badgeClass="bg-yellow-600 text-yellow-100"
-          headerClass="text-yellow-300"
+          colorClass="border-amber-500/25 bg-amber-900/10"
+          badgeClass="bg-amber-500/15 text-amber-300 border border-amber-500/30"
+          headerClass="text-amber-300"
         />
       </div>
     </div>
@@ -331,23 +326,29 @@ function PlayerCard({ player, side, index, darkName, lightName, onMove }: Player
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 border border-gray-700/50 text-sm text-white transition-colors text-left"
+        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-gray-800/50 hover:bg-gray-700/60 border border-white/[0.06] text-sm text-white transition-all text-left group"
       >
         {index !== undefined && (
-          <span className="text-xs text-gray-500 w-4 shrink-0">{index}.</span>
+          <span className="text-xs text-gray-600 w-4 shrink-0 font-mono">{index}.</span>
         )}
-        <span className="truncate">{player.name}</span>
+        <span
+          className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0"
+          style={{ backgroundColor: getPlayerColor(player.name) }}
+        >
+          {getInitials(player.name)}
+        </span>
+        <span className="truncate text-gray-200 group-hover:text-white transition-colors">{player.name}</span>
       </button>
 
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-full mt-1 z-20 bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden min-w-40">
+          <div className="absolute left-0 top-full mt-1 z-20 bg-gray-900/95 border border-white/[0.1] rounded-xl shadow-2xl shadow-black/60 overflow-hidden min-w-44 backdrop-blur-md animate-modal-in">
             {options.map(({ label, to }) => (
               <button
                 key={to}
                 onClick={() => { onMove(to); setOpen(false); }}
-                className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 transition-colors"
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800/70 hover:text-white transition-colors"
               >
                 {label}
               </button>

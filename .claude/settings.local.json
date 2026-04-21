@@ -60,7 +60,10 @@
       "Bash(docker compose:*)",
       "Bash(curl -s http://localhost:3001/health)",
       "Bash(curl -s http://localhost:3000 -o /dev/null -w \"%{http_code}\")",
-      "Bash(curl -s http://localhost:3000 -o /dev/null -w \"Frontend HTTP: %{http_code}\")"
+      "Bash(curl -s http://localhost:3000 -o /dev/null -w \"Frontend HTTP: %{http_code}\")",
+      "Read(//home/ignacio/Documents/probandoPartido/**)",
+      "Bash(venv/bin/pip install:*)",
+      "Bash(venv/bin/python:*)"
     ]
   }
 }

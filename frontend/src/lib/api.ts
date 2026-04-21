@@ -39,6 +39,7 @@ export interface EventSummary {
   endDate: string;
   createdAt: string;
   _count: { participants: number };
+  bestSlot: { date: string; timeSlot: string; count: number } | null;
 }
 
 export interface Participant {

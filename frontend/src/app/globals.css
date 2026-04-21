@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -16,7 +16,7 @@
 
 @layer components {
   .card {
-    @apply bg-gray-900 border border-gray-800 rounded-2xl p-6;
+    @apply bg-gray-900/75 backdrop-blur-sm border border-white/[0.07] rounded-2xl p-6 shadow-xl shadow-black/50;
   }
 
   .btn {
@@ -24,20 +24,20 @@
   }
 
   .btn-primary {
-    @apply btn bg-pitch-500 hover:bg-pitch-400 text-white px-5 py-2.5 text-sm;
+    @apply btn bg-gradient-to-b from-pitch-400 to-pitch-600 hover:from-pitch-300 hover:to-pitch-500 text-white px-5 py-2.5 text-sm shadow-lg shadow-pitch-500/25 hover:shadow-xl hover:shadow-pitch-500/35;
   }
 
   .btn-secondary {
-    @apply btn bg-gray-800 hover:bg-gray-700 text-gray-100 px-5 py-2.5 text-sm;
+    @apply btn bg-gray-800/70 hover:bg-gray-700/70 border border-white/[0.07] text-gray-100 px-5 py-2.5 text-sm backdrop-blur-sm;
   }
 
   .btn-ghost {
-    @apply btn text-gray-400 hover:text-gray-100 hover:bg-gray-800 px-4 py-2 text-sm;
+    @apply btn text-gray-400 hover:text-gray-100 hover:bg-gray-800/70 px-4 py-2 text-sm;
   }
 
   .input {
-    @apply w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500
-           focus:outline-none focus:ring-2 focus:ring-pitch-500 focus:border-transparent transition;
+    @apply w-full bg-gray-800/60 border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-gray-100 placeholder-gray-600
+           focus:outline-none focus:ring-2 focus:ring-pitch-500/60 focus:border-pitch-500/30 transition backdrop-blur-sm;
   }
 
   .label {
@@ -49,16 +49,110 @@
   }
 
   .badge-green {
-    @apply badge bg-pitch-500/20 text-pitch-400;
+    @apply badge bg-pitch-500/20 text-pitch-400 border border-pitch-500/20;
   }
 
   .badge-gray {
-    @apply badge bg-gray-800 text-gray-400;
+    @apply badge bg-gray-800/80 text-gray-400 border border-white/[0.05];
   }
 
   .badge-yellow {
-    @apply badge bg-yellow-500/20 text-yellow-400;
+    @apply badge bg-yellow-500/20 text-yellow-400 border border-yellow-500/20;
   }
+}
+
+/* Animated rings for hero */
+@keyframes ring-expand {
+  0% { transform: scale(1); opacity: 0.35; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.animate-ring-1 {
+  animation: ring-expand 2.5s ease-out infinite;
+}
+
+.animate-ring-2 {
+  animation: ring-expand 2.5s ease-out infinite 0.8s;
+}
+
+/* Modal entrance */
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(-12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.animate-modal-in {
+  animation: modal-in 0.18s ease-out forwards;
+}
+
+/* Fade slide in */
+@keyframes fade-slide-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-slide-in 0.25s ease-out forwards;
+}
+
+/* Celebration toast */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.97); }
+}
+
+.animate-toast-in  { animation: toast-in  0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-toast-out { animation: toast-out 0.25s ease-in forwards; }
+
+/* Bottom sheet slide-up (mobile) */
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.animate-sheet-in { animation: sheet-in 0.28s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+
+/* Tab content fade */
+@keyframes tab-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-tab-in { animation: tab-fade 0.2s ease-out forwards; }
+
+/* Hide scrollbar but keep scrolling */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Availability grid cell animations */
+.slot-cell {
+  @apply transition-all duration-100 cursor-pointer select-none;
+}
+
+.slot-cell:active {
+  transform: scale(0.93);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
 }
 
 /* Availability grid cell animations */

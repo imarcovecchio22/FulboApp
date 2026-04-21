@@ -32,13 +32,28 @@ export interface SlotResult {
 // ─── Events ───────────────────────────────────────────────────────────────────
 
 export async function listEvents() {
-  return prisma.event.findMany({
+  const events = await prisma.event.findMany({
     orderBy: { createdAt: 'desc' },
     take: 20,
     include: {
       _count: { select: { participants: true } },
     },
   });
+
+  const eventsWithBest = await Promise.all(
+    events.map(async (ev) => {
+      const results = await getEventResults(ev.id);
+      const best = results[0] ?? null;
+      return {
+        ...ev,
+        bestSlot: best
+          ? { date: best.date, timeSlot: best.timeSlot, count: best.count }
+          : null,
+      };
+    })
+  );
+
+  return eventsWithBest;
 }
 
 export async function createEvent(dto: CreateEventDto) {

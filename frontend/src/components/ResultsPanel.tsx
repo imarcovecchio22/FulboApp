@@ -5,6 +5,7 @@ import { SlotResult, BookingConfirmation } from '@/lib/api';
 import { formatDateLong } from '@/lib/dates';
 import { parseISO } from 'date-fns';
 import { Trophy, MapPin, CheckCircle2, X, Loader2 } from 'lucide-react';
+import { getPlayerColor, getInitials } from '@/lib/playerColors';
 import clsx from 'clsx';
 
 interface Props {
@@ -35,6 +36,7 @@ export function ResultsPanel({
   const [formPrice, setFormPrice] = useState('');
   const [formName, setFormName] = useState(participantName ?? '');
   const [submitting, setSubmitting] = useState(false);
+  const [celebration, setCelebration] = useState<string | null>(null);
 
   function openForm(date: string, timeSlot: string) {
     setConfirmingSlot({ date, timeSlot });
@@ -56,6 +58,8 @@ export function ResultsPanel({
         confirmedBy: formName.trim(),
       });
       setConfirmingSlot(null);
+      setCelebration(formVenue.trim());
+      setTimeout(() => setCelebration(null), 3500);
     } finally {
       setSubmitting(false);
     }
@@ -63,9 +67,17 @@ export function ResultsPanel({
 
   if (results.length === 0) {
     return (
-      <div className="card text-center py-16">
-        <div className="text-4xl mb-3">📊</div>
-        <p className="text-gray-400">Todavía no hay votos. Compartí el link con tus amigos.</p>
+      <div className="card relative overflow-hidden text-center py-16">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pitch-500/5 rounded-full blur-[80px]" />
+        </div>
+        <div className="relative">
+          <div className="text-5xl mb-4">📊</div>
+          <h3 className="text-white font-semibold mb-2">Sin votos todavía</h3>
+          <p className="text-gray-500 text-sm max-w-xs mx-auto leading-relaxed">
+            Compartí el link con tus amigos para que marquen su disponibilidad y aparezcan los resultados acá
+          </p>
+        </div>
       </div>
     );
   }
@@ -95,6 +107,21 @@ export function ResultsPanel({
         </div>
       )}
 
+      {/* Celebration toast */}
+      {celebration && (
+        <div className="fixed bottom-6 left-1/2 z-50 animate-toast-in pointer-events-none">
+          <div className="flex items-center gap-3 bg-gray-900/95 border border-green-500/30 rounded-2xl px-5 py-4 shadow-2xl shadow-black/60 backdrop-blur-md">
+            <div className="w-10 h-10 rounded-xl bg-green-500/15 border border-green-500/25 flex items-center justify-center text-xl flex-shrink-0">
+              🎉
+            </div>
+            <div>
+              <div className="text-white font-bold text-sm">¡Reserva confirmada!</div>
+              <div className="text-green-400 text-xs mt-0.5">{celebration}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {results.map((slot, idx) => {
         const isConfirmed = booking?.date === slot.date && booking?.timeSlot === slot.timeSlot;
         // Si hay reserva confirmada, solo resaltar ese slot; si no, resaltar el más votado
@@ -109,10 +136,10 @@ export function ResultsPanel({
             className={clsx(
               'card transition-all',
               isConfirmed
-                ? 'border-green-600/50 bg-green-950/20'
+                ? 'border-green-500/40 bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent shadow-lg shadow-green-500/10'
                 : isBest
-                  ? 'border-pitch-500 bg-pitch-500/5 hover:border-pitch-700 cursor-pointer'
-                  : 'hover:border-pitch-700 cursor-pointer'
+                  ? 'border-pitch-500/50 bg-gradient-to-br from-pitch-500/15 via-pitch-500/5 to-transparent shadow-xl shadow-pitch-500/15 hover:shadow-pitch-500/25 cursor-pointer'
+                  : 'hover:border-pitch-700/50 cursor-pointer'
             )}
             onClick={() => !isConfirming && !isConfirmed && onSelectSlot(slot.date, slot.timeSlot)}
           >
@@ -139,8 +166,12 @@ export function ResultsPanel({
             <div className="h-2 bg-gray-800 rounded-full overflow-hidden mb-3">
               <div
                 className={clsx(
-                  'h-full rounded-full transition-all duration-500',
-                  isConfirmed ? 'bg-green-500' : isBest ? 'bg-pitch-400' : 'bg-gray-600'
+                  'h-full rounded-full transition-all duration-700',
+                  isConfirmed
+                    ? 'bg-gradient-to-r from-green-600 to-green-400'
+                    : isBest
+                      ? 'bg-gradient-to-r from-pitch-600 to-pitch-300 shadow-sm shadow-pitch-400/50'
+                      : 'bg-gray-700'
                 )}
                 style={{ width: `${barPct}%` }}
               />
@@ -149,7 +180,13 @@ export function ResultsPanel({
             {/* Participants */}
             <div className="flex flex-wrap gap-1.5 items-center mb-3">
               {slot.participants.map((name) => (
-                <span key={name} className="badge-gray text-xs px-2 py-0.5">
+                <span key={name} className="inline-flex items-center gap-1.5 bg-gray-800/70 border border-white/[0.06] rounded-full pl-0.5 pr-2.5 py-0.5 text-xs text-gray-200">
+                  <span
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-white font-bold text-[9px] flex-shrink-0"
+                    style={{ backgroundColor: getPlayerColor(name) }}
+                  >
+                    {getInitials(name)}
+                  </span>
                   {name}
                 </span>
               ))}
